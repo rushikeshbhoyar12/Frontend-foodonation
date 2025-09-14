@@ -1,9 +1,9 @@
 
 import { Link } from 'react-router-dom';
-import { 
-  Clock, 
-  MapPin, 
-  Package, 
+import {
+  Clock,
+  MapPin,
+  Package,
   Calendar,
   User
 } from 'lucide-react';
@@ -60,18 +60,18 @@ export default function DonationCard({ donation, showActions = true }: DonationC
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
-      year: 'numeric', 
-      month: 'short', 
-      day: 'numeric' 
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
     });
   };
 
   const formatDateTime = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
-      year: 'numeric', 
-      month: 'short', 
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
       day: 'numeric',
       hour: '2-digit',
       minute: '2-digit'
