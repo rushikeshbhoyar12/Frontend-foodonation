@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { donationsAPI } from '../api/donations';
 import DonationCard from '../components/DonationCard';
@@ -36,11 +36,7 @@ export default function Home() {
   const [selectedFoodType, setSelectedFoodType] = useState('');
   const [selectedCity, setSelectedCity] = useState('');
 
-  useEffect(() => {
-    loadDonations();
-  }, [selectedFoodType, selectedCity]);
-
-  const loadDonations = async () => {
+  const loadDonations = useCallback(async () => {
     try {
       setLoading(true);
       const filters: any = { status: 'available' };
@@ -54,7 +50,11 @@ export default function Home() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [selectedFoodType, selectedCity]);
+
+  useEffect(() => {
+    loadDonations();
+  }, [loadDonations]);
 
   const filteredDonations = donations.filter((donation: Donation) =>
     donation.title.toLowerCase().includes(searchTerm.toLowerCase()) ||

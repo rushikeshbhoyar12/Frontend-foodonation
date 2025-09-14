@@ -1,27 +1,6 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { authAPI } from '../api/auth';
-
-interface User {
-  id: number;
-  name: string;
-  email: string;
-  role: 'donor' | 'receiver' | 'admin';
-  phone?: string;
-  address?: string;
-  city?: string;
-  state?: string;
-  zip_code?: string;
-}
-
-interface AuthContextType {
-  user: User | null;
-  token: string | null;
-  login: (email: string, password: string) => Promise<void>;
-  register: (userData: any) => Promise<void>;
-  logout: () => void;
-  loading: boolean;
-  updateProfile: (profileData: any) => Promise<void>;
-}
+import { User, AuthContextType, RegisterData } from '../types';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -72,7 +51,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     localStorage.setItem('token', response.token);
   };
 
-  const register = async (userData: any) => {
+  const register = async (userData: RegisterData) => {
     const response = await authAPI.register(userData);
     setToken(response.token);
     setUser(response.user);
@@ -85,7 +64,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     localStorage.removeItem('token');
   };
 
-  const updateProfile = async (profileData: any) => {
+  const updateProfile = async (profileData: Partial<User>) => {
     if (!token) throw new Error('No authentication token');
     await authAPI.updateProfile(profileData, token);
     // Reload profile to get updated data

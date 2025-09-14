@@ -1,12 +1,11 @@
-import React from 'react';
+
 import { Link } from 'react-router-dom';
 import { 
   Clock, 
   MapPin, 
   Package, 
   Calendar,
-  User,
-  Phone
+  User
 } from 'lucide-react';
 
 interface DonationCardProps {

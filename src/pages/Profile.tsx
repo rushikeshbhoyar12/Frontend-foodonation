@@ -45,7 +45,7 @@ const Profile: React.FC = () => {
         setTimeout(() => setSuccess(null), 3000);
       }, 1000);
 
-    } catch (err) {
+    } catch {
       setError('Failed to update profile. Please try again.');
       setIsSaving(false);
     }

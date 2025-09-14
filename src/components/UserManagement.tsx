@@ -7,7 +7,6 @@ import {
     Filter,
     UserCheck,
     UserX,
-    Mail,
     Phone,
     MapPin,
     Calendar,
