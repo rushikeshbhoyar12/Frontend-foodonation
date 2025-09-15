@@ -159,44 +159,7 @@ A comprehensive food donation platform that bridges the gap between food donors 
 - `GET /api/requests` - Get user requests
 - `PUT /api/requests/:id/status` - Update request status
 
-## 🚀 Deployment Guide
 
-### 📦 Deploy to Render
-
-1. **Prepare for deployment**
-   ```bash
-   # Ensure all dependencies are installed
-   npm install
-   cd backend && npm install && cd ..
-   ```
-
-2. **Create Render account** at [render.com](https://render.com)
-
-3. **Database Setup on Render**
-   - Create a new **PostgreSQL** database service
-   - Note the database URL for environment variables
-
-4. **Backend Deployment**
-   - Create a new **Web Service**
-   - Connect your GitHub repository
-   - Set **Root Directory**: `backend`
-   - **Build Command**: `npm install`
-   - **Start Command**: `npm start`
-   - **Environment Variables**:
-     ```
-     NODE_ENV=production
-     DATABASE_URL=[your-render-db-url]
-     JWT_SECRET=[your-secret-key]
-     PORT=5000
-     ```
-
-5. **Frontend Deployment**
-   - Create another **Static Site**
-   - **Build Command**: `npm run build`
-   - **Publish Directory**: `dist`
-   - **Environment Variables**:
-     ```
-     VITE_API_URL=[your-backend-url]
      ```
 
 ### 🌐 Environment Variables
