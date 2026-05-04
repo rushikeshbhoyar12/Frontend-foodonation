@@ -117,4 +117,21 @@ export const donationsAPI = {
             donations: transformDonations(data.donations)
         };
     },
+
+    async getReceivedDonations(token) {
+        const response = await fetch(`${API_URL}/donations/received/my-received`, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch received donations');
+        }
+
+        const data = await response.json();
+        return {
+            donations: transformDonations(data.donations)
+        };
+    },
 };

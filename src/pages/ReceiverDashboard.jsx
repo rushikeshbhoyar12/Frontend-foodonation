@@ -11,6 +11,7 @@ import { Search, Package, CheckCircle, Heart, Clock, X, Bell } from 'lucide-reac
 const ReceiverDashboard = () => {
     const { user, token } = useAuth();
     const [donations, setDonations] = useState([]);
+    const [receivedDonations, setReceivedDonations] = useState([]);
     const [requests, setRequests] = useState([]);
     const [notifications, setNotifications] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -37,6 +38,10 @@ const ReceiverDashboard = () => {
 
                     const notificationsData = await notificationsAPI.getNotifications(token);
                     setNotifications(notificationsData || []);
+
+                    // Fetch received donations
+                    const receivedData = await donationsAPI.getReceivedDonations(token);
+                    setReceivedDonations(receivedData.donations || []);
                 }
             } catch (err) {
                 setError('Failed to load data');
@@ -88,7 +93,7 @@ const ReceiverDashboard = () => {
             </div>
 
             {/* Quick Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                 <div className="bg-white overflow-hidden shadow rounded-lg">
                     <div className="p-5">
                         <div className="flex items-center">
@@ -131,6 +136,22 @@ const ReceiverDashboard = () => {
                                 <dl>
                                     <dt className="text-sm font-medium text-gray-500 truncate">Completed</dt>
                                     <dd className="text-lg font-medium text-gray-900">{requests.filter(r => r.status === 'completed').length}</dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="bg-white overflow-hidden shadow rounded-lg">
+                    <div className="p-5">
+                        <div className="flex items-center">
+                            <div className="flex-shrink-0">
+                                <CheckCircle className="h-8 w-8 text-purple-600" />
+                            </div>
+                            <div className="ml-5 w-0 flex-1">
+                                <dl>
+                                    <dt className="text-sm font-medium text-gray-500 truncate">Donations Received</dt>
+                                    <dd className="text-lg font-medium text-gray-900">{receivedDonations.length}</dd>
                                 </dl>
                             </div>
                         </div>
@@ -200,9 +221,9 @@ const ReceiverDashboard = () => {
                                         <p className="text-sm text-gray-600">From: {request.donor_name}</p>
                                     </div>
                                     <span className={`px-2 py-1 text-xs font-medium rounded ${request.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                                            request.status === 'accepted' ? 'bg-green-100 text-green-800' :
-                                                request.status === 'completed' ? 'bg-blue-100 text-blue-800' :
-                                                    'bg-red-100 text-red-800'
+                                        request.status === 'accepted' ? 'bg-green-100 text-green-800' :
+                                            request.status === 'completed' ? 'bg-blue-100 text-blue-800' :
+                                                'bg-red-100 text-red-800'
                                         }`}>
                                         {request.status}
                                     </span>
@@ -227,24 +248,37 @@ const ReceiverDashboard = () => {
                 </div>
             )}
 
-            {/* Available Donations */}
-            <div className="bg-white shadow rounded-lg p-6">
-                <h2 className="text-lg font-medium text-gray-900 mb-4">Browse Available Donations</h2>
-                {donations.length > 0 ? (
+            {/* Received Donations */}
+            {receivedDonations.length > 0 && (
+                <div className="bg-white shadow rounded-lg p-6">
+                    <h2 className="text-lg font-medium text-gray-900 mb-4 flex items-center">
+                        <CheckCircle className="h-5 w-5 mr-2 text-purple-600" />
+                        Your Received Donations
+                    </h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {donations.map(donation => (
-                            <DonationCard key={donation.id} donation={donation} showActions={true} />
+                        {receivedDonations.map(donation => (
+                            <div key={donation.id} className="border border-purple-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
+                                {donation.image_url && (
+                                    <img src={donation.image_url} alt={donation.title} className="w-full h-48 object-cover" />
+                                )}
+                                <div className="p-4">
+                                    <div className="flex items-start justify-between mb-2">
+                                        <h3 className="font-semibold text-gray-900">{donation.title}</h3>
+                                        <span className="px-2 py-1 text-xs font-medium bg-purple-100 text-purple-800 rounded">
+                                            Received
+                                        </span>
+                                    </div>
+                                    <p className="text-sm text-gray-600 mb-2">From: {donation.donor_name}</p>
+                                    <p className="text-sm text-gray-700 mb-3">{donation.description}</p>
+                                    <div className="grid grid-cols-2 gap-2 text-xs text-gray-600 mb-3">
+                                        <div><span className="font-medium">Type:</span> {donation.food_type}</div>
+                                        <div><span className="font-medium">Quantity:</span> {donation.quantity}</div>
+                                        <div><span className="font-medium">Location:</span> {donation.donor_city}</div>
+                                        <div><span className="font-medium">Phone:</span> {donation.donor_phone}</div>
+                                    </div>
+                                </div>
+                            </div>
                         ))}
                     </div>
-                ) : (
-                    <div className="text-center py-8">
-                        <Package className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-                        <p className="text-gray-600">No donations available matching your filters.</p>
-                    </div>
-                )}
-            </div>
-        </div>
-    );
-};
-
-export default ReceiverDashboard;
+                </div>
+            )}
