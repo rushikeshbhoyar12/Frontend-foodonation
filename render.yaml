@@ -1,0 +1,11 @@
+services:
+  - type: static
+    name: fooddonation-frontend
+    staticPublishPath: ./dist
+    buildCommand: npm install && npm run build
+    envVars:
+      - key: VITE_API_URL
+        value: https://backend-fooddonation.onrender.com/api
+    routes:
+      - path: /*
+        destination: /index.html
