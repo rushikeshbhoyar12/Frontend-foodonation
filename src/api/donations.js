@@ -1,4 +1,18 @@
-const API_URL = import.meta.env.VITE_API_URL  ;
+const API_URL = import.meta.env.VITE_API_URL;
+
+// Helper to transform MongoDB _id to id
+const transformDonation = (donation) => {
+    if (!donation) return null;
+    return {
+        ...donation,
+        id: donation._id || donation.id
+    };
+};
+
+const transformDonations = (donations) => {
+    if (!donations) return [];
+    return donations.map(transformDonation);
+};
 
 export const donationsAPI = {
     async getAllDonations(filters) {
@@ -17,7 +31,10 @@ export const donationsAPI = {
         if (!response.ok) {
             throw new Error('Failed to fetch donations');
         }
-        return response.json();
+        const data = await response.json();
+        return {
+            donations: transformDonations(data.donations)
+        };
     },
 
     async getDonationById(id) {
@@ -25,7 +42,10 @@ export const donationsAPI = {
         if (!response.ok) {
             throw new Error('Failed to fetch donation');
         }
-        return response.json();
+        const data = await response.json();
+        return {
+            donation: transformDonation(data.donation)
+        };
     },
 
     async createDonation(donationData, token) {
@@ -43,7 +63,8 @@ export const donationsAPI = {
             throw new Error(error.message || 'Failed to create donation');
         }
 
-        return response.json();
+        const data = await response.json();
+        return data;
     },
 
     async updateDonation(id, donationData, token) {
@@ -91,6 +112,9 @@ export const donationsAPI = {
             throw new Error('Failed to fetch my donations');
         }
 
-        return response.json();
+        const data = await response.json();
+        return {
+            donations: transformDonations(data.donations)
+        };
     },
 };
