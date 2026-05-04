@@ -26,16 +26,7 @@ export default function Login() {
         }
     };
 
-    const demoCredentials = [
-        { role: 'Admin', email: 'admin@fooddonation.com', password: 'admin123' },
-        { role: 'Donor', email: 'donor@example.com', password: 'donor123' },
-        { role: 'Receiver', email: 'receiver@example.com', password: 'receiver123' },
-    ];
 
-    const loginWithDemo = (email, password) => {
-        setEmail(email);
-        setPassword(password);
-    };
 
     return (
         <div className="min-h-[80vh] flex items-center justify-center">
@@ -114,27 +105,7 @@ export default function Login() {
                     </div>
                 </form>
 
-                {/* Demo Credentials */}
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mt-8">
-                    <h3 className="text-sm font-medium text-blue-900 mb-4">Demo Credentials</h3>
-                    <div className="space-y-3">
-                        {demoCredentials.map((cred, index) => (
-                            <div key={index} className="flex items-center justify-between">
-                                <div className="text-sm text-blue-800">
-                                    <div className="font-medium">{cred.role}</div>
-                                    <div className="text-xs">{cred.email}</div>
-                                </div>
-                                <button
-                                    type="button"
-                                    onClick={() => loginWithDemo(cred.email, cred.password)}
-                                    className="text-xs bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition-colors"
-                                >
-                                    Use
-                                </button>
-                            </div>
-                        ))}
-                    </div>
-                </div>
+
             </div>
         </div>
     );
