@@ -1,31 +1,7 @@
-const API_URL = 'http://localhost:5000/api';
-
-export interface AdminStats {
-    users: {
-        total: number;
-        donor: number;
-        receiver: number;
-        admin: number;
-    };
-    donations: {
-        total: number;
-        available: number;
-        completed: number;
-        expired: number;
-    };
-    requests: {
-        total: number;
-        pending: number;
-        approved: number;
-        rejected: number;
-    };
-    recentActivity: {
-        donations: number;
-    };
-}
+const API_URL = import.meta.env.VITE_API_URL ;
 
 export const adminAPI = {
-    async getStats(): Promise<AdminStats> {
+    async getStats() {
         const token = localStorage.getItem('token');
 
         const response = await fetch(`${API_URL}/admin/stats`, {
@@ -63,7 +39,7 @@ export const adminAPI = {
         return response.json();
     },
 
-    async updateUser(userId: number, userData: any) {
+    async updateUser(userId, userData) {
         const token = localStorage.getItem('token');
 
         const response = await fetch(`${API_URL}/admin/users/${userId}`, {
@@ -83,7 +59,7 @@ export const adminAPI = {
         return response.json();
     },
 
-    async deleteUser(userId: number) {
+    async deleteUser(userId) {
         const token = localStorage.getItem('token');
 
         const response = await fetch(`${API_URL}/admin/users/${userId}`, {
@@ -100,5 +76,5 @@ export const adminAPI = {
         }
 
         return response.json();
-    }
+    },
 };

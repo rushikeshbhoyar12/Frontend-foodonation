@@ -23,3 +23,7 @@ dist-ssr
 *.sln
 *.sw?
 .env
+.env.example
+/backend
+CONTRIBUTING.md
+README.md

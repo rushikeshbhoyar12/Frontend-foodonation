@@ -1,7 +1,7 @@
-const API_URL = 'http://localhost:5000/api';
+const API_URL = import.meta.env.VITE_API_URL ;
 
 export const notificationsAPI = {
-    async getNotifications(token: string) {
+    async getNotifications(token) {
         const response = await fetch(`${API_URL}/notifications`, {
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -15,7 +15,7 @@ export const notificationsAPI = {
         return response.json();
     },
 
-    async markAsRead(notificationId: string, token: string) {
+    async markAsRead(notificationId, token) {
         const response = await fetch(`${API_URL}/notifications/${notificationId}/read`, {
             method: 'PUT',
             headers: {
@@ -32,7 +32,7 @@ export const notificationsAPI = {
         return response.json();
     },
 
-    async markAllAsRead(token: string) {
+    async markAllAsRead(token) {
         const response = await fetch(`${API_URL}/notifications/read-all`, {
             method: 'PUT',
             headers: {
@@ -49,7 +49,7 @@ export const notificationsAPI = {
         return response.json();
     },
 
-    async getUnreadCount(token: string) {
+    async getUnreadCount(token) {
         const response = await fetch(`${API_URL}/notifications/unread-count`, {
             headers: {
                 'Authorization': `Bearer ${token}`,
