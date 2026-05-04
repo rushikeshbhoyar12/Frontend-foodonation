@@ -108,6 +108,18 @@ export default function Navbar() {
         setShowNotifications(!showNotifications);
     };
 
+    // Close notifications when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (showNotifications && !event.target.closest('[data-notifications-container]')) {
+                setShowNotifications(false);
+            }
+        };
+
+        document.addEventListener('click', handleClickOutside);
+        return () => document.removeEventListener('click', handleClickOutside);
+    }, [showNotifications]);
+
     // Get filtered notifications for donors (same logic as DonorDashboard)
     const getRelevantNotifications = () => {
         if (user?.role !== 'donor') return notifications;
@@ -143,17 +155,17 @@ export default function Navbar() {
         if (!token) return;
 
         try {
-            await notificationsAPI.markAsRead(notificationId.toString(), token);
+            await notificationsAPI.markAsRead(notificationId, token);
             setNotifications(prev => prev.map(notification =>
-                notification.id === notificationId
+                notification._id === notificationId
                     ? { ...notification, is_read: true }
                     : notification
             ));
             // Refresh unread count
-            const relevantNotifications = getRelevantNotifications();
-            const unreadRelevant = relevantNotifications.filter((n) =>
-                n.id === notificationId ? true : !n.is_read
-            ).length - 1;
+            const relevantNotifications = getRelevantNotifications().map(n =>
+                n._id === notificationId ? { ...n, is_read: true } : n
+            );
+            const unreadRelevant = relevantNotifications.filter(n => !n.is_read).length;
             setUnreadCount(Math.max(0, unreadRelevant));
         } catch (error) {
             console.error('Error marking notification as read:', error);
@@ -194,7 +206,7 @@ export default function Navbar() {
                                         <span>Donate</span>
                                     </Link>
                                 )}
-                                <div className="relative">
+                                <div className="relative" data-notifications-container>
                                     <button
                                         onClick={toggleNotifications}
                                         className="relative text-gray-700 hover:text-green-600 transition-colors"
@@ -206,6 +218,55 @@ export default function Navbar() {
                                             </span>
                                         )}
                                     </button>
+
+                                    {/* Notification Dropdown */}
+                                    {showNotifications && (
+                                        <div className="absolute right-0 mt-2 w-96 bg-white rounded-lg shadow-2xl z-50 max-h-96 overflow-y-auto">
+                                            <div className="p-4 border-b border-gray-200 flex justify-between items-center">
+                                                <h3 className="font-semibold text-gray-800">Notifications</h3>
+                                                <button
+                                                    onClick={() => setShowNotifications(false)}
+                                                    className="text-gray-500 hover:text-gray-700"
+                                                >
+                                                    <X className="h-5 w-5" />
+                                                </button>
+                                            </div>
+
+                                            {getRelevantNotifications().length === 0 ? (
+                                                <div className="p-6 text-center text-gray-500">
+                                                    No notifications
+                                                </div>
+                                            ) : (
+                                                <div className="divide-y">
+                                                    {getRelevantNotifications().map((notification) => (
+                                                        <div
+                                                            key={notification._id}
+                                                            className={`p-4 hover:bg-gray-50 cursor-pointer transition-colors ${!notification.is_read ? 'bg-blue-50' : ''
+                                                                }`}
+                                                            onClick={(e) => handleMarkAsRead(notification._id, e)}
+                                                        >
+                                                            <div className="flex justify-between items-start">
+                                                                <div className="flex-1">
+                                                                    <p className="font-medium text-gray-800 text-sm">
+                                                                        {notification.title}
+                                                                    </p>
+                                                                    <p className="text-gray-600 text-xs mt-1">
+                                                                        {notification.message}
+                                                                    </p>
+                                                                    <p className="text-gray-400 text-xs mt-2">
+                                                                        {new Date(notification.created_at).toLocaleDateString()}
+                                                                    </p>
+                                                                </div>
+                                                                {!notification.is_read && (
+                                                                    <span className="ml-2 h-2 w-2 bg-blue-500 rounded-full mt-1"></span>
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
                                 </div>
                                 <div className="flex items-center space-x-3">
                                     <span className="text-sm text-gray-700">{user.name}</span>
