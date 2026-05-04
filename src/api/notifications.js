@@ -1,4 +1,18 @@
-const API_URL = import.meta.env.VITE_API_URL ;
+const API_URL = import.meta.env.VITE_API_URL;
+
+// Transform MongoDB _id to id
+const transformNotification = (notification) => {
+    if (!notification) return null;
+    return {
+        ...notification,
+        id: notification._id || notification.id
+    };
+};
+
+const transformNotifications = (notifications) => {
+    if (!Array.isArray(notifications)) return [];
+    return notifications.map(transformNotification);
+};
 
 export const notificationsAPI = {
     async getNotifications(token) {
@@ -12,7 +26,8 @@ export const notificationsAPI = {
             throw new Error('Failed to fetch notifications');
         }
 
-        return response.json();
+        const data = await response.json();
+        return transformNotifications(data);
     },
 
     async markAsRead(notificationId, token) {
