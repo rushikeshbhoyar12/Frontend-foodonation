@@ -26,3 +26,5 @@ dist-ssr
 
 CONTRIBUTING.md
 README.md
+backend/
+.github/
