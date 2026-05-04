@@ -282,3 +282,25 @@ const ReceiverDashboard = () => {
                     </div>
                 </div>
             )}
+
+            {/* Available Donations */}
+            <div className="bg-white shadow rounded-lg p-6">
+                <h2 className="text-lg font-medium text-gray-900 mb-4">Browse Available Donations</h2>
+                {donations.length > 0 ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {donations.map(donation => (
+                            <DonationCard key={donation.id} donation={donation} showActions={true} />
+                        ))}
+                    </div>
+                ) : (
+                    <div className="text-center py-8">
+                        <Package className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+                        <p className="text-gray-600">No donations available matching your filters.</p>
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+};
+
+export default ReceiverDashboard;
